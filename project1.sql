@@ -37,8 +37,6 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `password`, `last_login_time`) VALUES
-(6, 'archi.khramov@gmail.com', '$2y$10$h7EwvjDau.aU81AaGR1MLO4RheIokArwvB51vRIn6O8T0nFghG3oq', '2017-08-24 07:38:58');
 
 -- --------------------------------------------------------
 
@@ -56,8 +54,6 @@ CREATE TABLE `users_data` (
 -- Дамп данных таблицы `users_data`
 --
 
-INSERT INTO `users_data` (`id`, `fullname`, `picture`) VALUES
-(6, 'Sebastien Boin', '1503560338.jpg');
 
 --
 -- Индексы сохранённых таблиц
