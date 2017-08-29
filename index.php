@@ -25,46 +25,55 @@ set_error_handler('errorHandler', E_ALL);
 session_start();
 
 $gIsRegistration = false;
+
 $gErrorMessage = "";
+
 $gUserData = [];
 
-if(isset($_POST["locale"])){
+if (isset($_POST["locale"])) {
+
   $_SESSION["locale"] = $_POST["locale"];
+
 }
 
 $database = new DB();
+
 $dictionary = new Dictionary(isset($_SESSION["locale"]) ? $_SESSION["locale"] : "EN");
+
 $userImage = new UserImage();
 
 $dictionary->create();
 
-if(isset($_SERVER['QUERY_STRING'])){
+if (isset($_SERVER['QUERY_STRING'])) {
 
-    if("registration" == $_SERVER['QUERY_STRING']){
+    if ("registration" == $_SERVER['QUERY_STRING']) {
+
         $gIsRegistration = true;
+
     }
 
-    if("logout" == $_SERVER['QUERY_STRING']){
+    if ("logout" == $_SERVER['QUERY_STRING']) {
+
         session_unset();
         session_destroy();
         header("Location: ./");
         exit;
+
     }
 }
 
 // start registration
-if(isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["fullname"]) && isset($_POST["password_confirm"])){
+if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["fullname"]) && isset($_POST["password_confirm"])) {
 
-    //$database->connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
-
-    if($database->ifUserExists("SELECT id FROM users WHERE email=?",[$_POST["email"]])){
+    if ($database->ifUserExists("SELECT id FROM users WHERE email=?",[$_POST["email"]])){
 
         $gErrorMessage = $dictionary->getText("user_exists");
  
-    }else{
+    } else {
 
         $user_image_result = $userImage->checkImage(USER_PICTURES_DIR,50000);
-        if($user_image_result["status"]){
+
+        if ($user_image_result["status"]) {
     
             $hashToStoreInDb = password_hash($_POST["password"], PASSWORD_BCRYPT);
             $args = [];
@@ -77,53 +86,47 @@ if(isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["fullname
             
         
             $args1[0] = $database->register("INSERT INTO users(email,password) VALUES (?,?)",$args);
-            if($args1[0]){
+
+            if ($args1[0]) {
                $gIsRegistration = false;
                $result = $database->insertuserdata("INSERT INTO users_data(id,fullname,picture) VALUES (?,?,?)",$args1);
             }
         
-        }else{
+        } else {
             $gErrorMessage = $dictionary->getText($user_image_result["error"]);
         }
 
     }
 
-    //$database->close();
 }
 // end registration
 
 // start login
-if(!$gIsRegistration && isset($_POST["email"]) && isset($_POST["password"])){
+if (!$gIsRegistration && isset($_POST["email"]) && isset($_POST["password"])) {
 
-    //$database->connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
     $args = [$_POST["email"]];
     $stored_data = $database->login("SELECT id,password FROM users WHERE email=?",$args);
 
-    if(!$stored_data){
+    if (!$stored_data) {
         $gErrorMessage = $dictionary->getText("no_such_user");
-    }else{
-        if(password_verify($_POST["password"], $stored_data[1])){
+    } else {
+        if (password_verify($_POST["password"], $stored_data[1])) {
             $_SESSION["user_id"] = $stored_data[0];
-        }else{
+        } else {
             $gErrorMessage = $dictionary->getText("wrong_password");
         }
     }
 
-    //$database->close();
 }
 // end login
 
 
 // if user loggedin
-if(isset($_SESSION["user_id"])){
+if (isset($_SESSION["user_id"])) {
 
-    //$database->connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
-
-    $args = [$_SESSION["user_id"]];
-    $gUserData = $database->getuser("SELECT fullname,picture FROM users_data WHERE id=?",$args);    
+    $gUserData = $database->getuser("SELECT fullname,picture FROM users_data WHERE id=?",[$_SESSION["user_id"]]);    
     
-    //$database->close();
 }
 
 
@@ -132,11 +135,11 @@ include("html/header.html.php");
 
 include("utils/jsVariables.php");
 
-if(isset($_SESSION["user_id"])){
+if (isset($_SESSION["user_id"])) {
 
     include("html/welcome.html.php");
 
-}else{
+} else {
 
     include("html/form.html.php");
 
