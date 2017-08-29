@@ -2,7 +2,7 @@
 class UserImage
 {                  
 
-    public static function checkImage($dir,$size){
+    public function checkImage($dir,$size){
         
         if($_FILES['userfile']['size']>$size){
 

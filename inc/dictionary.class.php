@@ -4,10 +4,10 @@ class Dictionary
     public static $dictionary;
     public static $languages = ["RU","EN"];
 
-    public static function getLanguages(){
+    public function getLanguages(){
         return self::$languages;
     }
-    public static function create($locale){
+    public function create($locale){
 
         self::$dictionary = [];
 
@@ -68,7 +68,7 @@ class Dictionary
         return self::$dictionary;
     }
 
-    public static function getText($key){
+    public function getText($key){
 
         if(self::$dictionary[$key]){
             return self::$dictionary[$key];

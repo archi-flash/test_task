@@ -3,7 +3,7 @@ class DB
 {                  
     public static $conn;
 
-    public static function connect($host, $user, $pass, $name){
+    public function connect($host, $user, $pass, $name){
         try{
 
             self::$conn = new mysqli($host, $user, $pass, $name);
@@ -23,7 +23,7 @@ class DB
         return self::$conn;
     }
 
-    public static function register($sql,$args){
+    public function register($sql,$args){
         
         if ($stmt = self::$conn->prepare($sql)){
             
@@ -44,7 +44,7 @@ class DB
 	}
     }
 
-    public static function ifUserExists($sql,$args){
+    public function ifUserExists($sql,$args){
         
         if ($stmt = self::$conn->prepare($sql)){
             
@@ -69,7 +69,7 @@ class DB
     }
 
 	
-    public static function insertuserdata($sql,$args){
+    public function insertuserdata($sql,$args){
         
         if ($stmt = self::$conn->prepare($sql)){
             
@@ -90,7 +90,7 @@ class DB
 	}
     }	
 
-    public static function login($sql,$args){
+    public function login($sql,$args){
         
         if ($stmt = self::$conn->prepare($sql)){
              
@@ -116,7 +116,7 @@ class DB
 
     }
 
-    public static function getuser($sql,$args){
+    public function getuser($sql,$args){
         
         if ($stmt = self::$conn->prepare($sql)){
              
@@ -144,7 +144,7 @@ class DB
 
     }
 
-    public static function close(){
+    public function close(){
 
         return mysqli_close(self::$conn);
 
