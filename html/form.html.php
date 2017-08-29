@@ -14,14 +14,14 @@
         <div id="language_selector">
 
 <?php 
-$langs = Dictionary::getLanguages();
+$langs = $dictionary->getLanguages();
 foreach($langs as $lang){
     echo ' <a href="#" class="a13px" onClick="switchLanguage(\''.$lang.'\');return false;">'.$lang.'</a>';
 }
 ?>
         </div>
 
-        <div id="form_title"><?=Dictionary::getText($gIsRegistration ? "registration" : "sign_in")?></div>
+        <div id="form_title"><?=$dictionary->getText($gIsRegistration ? "registration" : "sign_in")?></div>
 
         <div class="form_group">
             <div class="form_label">
@@ -34,7 +34,7 @@ foreach($langs as $lang){
 
         <div class="form_group">
             <div class="form_label">
-                <?=Dictionary::getText("password")?>
+                <?=$dictionary->getText("password")?>
             </div>
             <div class="form_input">
                 <input type="password" placeholder="*****" class="form_control" id="password" name="password" tabindex="2">
@@ -45,7 +45,7 @@ foreach($langs as $lang){
 
         <div class="form_group">
             <div class="form_label">
-                <?=Dictionary::getText("password")?>
+                <?=$dictionary->getText("password")?>
             </div>
             <div class="form_input">
                 <input type="password" placeholder="*****" class="form_control" id="password_confirm" name="password_confirm" tabindex="3">
@@ -54,16 +54,16 @@ foreach($langs as $lang){
 
         <div class="form_group">
             <div class="form_label">
-                <?=Dictionary::getText("fullname")?>
+                <?=$dictionary->getText("fullname")?>
             </div>
             <div class="form_input">
-                <input type="text" placeholder="<?=Dictionary::getText("fullname")?>" class="form_control" id="fullname" name="fullname" tabindex="4">
+                <input type="text" placeholder="<?=$dictionary->getText("fullname")?>" class="form_control" id="fullname" name="fullname" tabindex="4">
             </div>
         </div>
         <div class="form_group">
             <div class="form_file">
                 <label for="file-upload" class="custom-file-upload">
-                <i class="fa fa-cloud-upload"></i> <?=Dictionary::getText("choose_file")?>
+                <i class="fa fa-cloud-upload"></i> <?=$dictionary->getText("choose_file")?>
                 </label>
                 <input type="hidden" name="MAX_FILE_SIZE" value="300000">
                 <input id="file-upload" name="userfile" type="file" accept="image/x-png,image/gif,image/jpeg"/><span id="filename"></span>
@@ -71,15 +71,15 @@ foreach($langs as $lang){
         </div>
         <div class="form_group">
             <div class="terms_checkbox">
-                <input type="checkbox" id="terms" name="terms"><?=Dictionary::getText("terms")?>
+                <input type="checkbox" id="terms" name="terms"><?=$dictionary->getText("terms")?>
             </div>
         </div>
 
 <?php }  ?>
 
         <div class="form_submit">
-             <a href="#" onClick="<?=($gIsRegistration ? "doRegister" : "doLogin")?>();return false" class="form_button"><?=Dictionary::getText($gIsRegistration ? "ok" : "login")?></a>&nbsp;&nbsp;&nbsp;&nbsp;
-             <a href="<?=($gIsRegistration ? "?" : "?registration")?>"><?=Dictionary::getText($gIsRegistration ? "or_login" : "or_register")?></a>
+             <a href="#" onClick="<?=($gIsRegistration ? "doRegister" : "doLogin")?>();return false" class="form_button"><?=$dictionary->getText($gIsRegistration ? "ok" : "login")?></a>&nbsp;&nbsp;&nbsp;&nbsp;
+             <a href="<?=($gIsRegistration ? "?" : "?registration")?>"><?=$dictionary->getText($gIsRegistration ? "or_login" : "or_register")?></a>
         </div>
         <div id="error_message"><?=$gErrorMessage?></div>
     </form>

@@ -13,12 +13,14 @@ if(MODE=="production"){
     ini_set('display_errors', true);error_reporting(E_ALL ^ E_NOTICE);
 }
 
-require_once 'inc/DB.class.php';
-require_once 'inc/UserImage.class.php';
-require_once 'inc/Dictionary.class.php';
-require_once 'inc/errorHandler.php';
+require_once 'classes/DB.class.php';
+require_once 'classes/UserImage.class.php';
+require_once 'classes/Dictionary.class.php';
+
+require_once 'utils/errorHandler.php';
 
 set_error_handler('errorHandler', E_ALL);
+
 
 session_start();
 
@@ -30,7 +32,11 @@ if(isset($_POST["locale"])){
   $_SESSION["locale"] = $_POST["locale"];
 }
 
-Dictionary::create(isset($_SESSION["locale"]) ? $_SESSION["locale"] : "EN");
+$database = new DB();
+$dictionary = new Dictionary(isset($_SESSION["locale"]) ? $_SESSION["locale"] : "EN");
+$userImage = new UserImage();
+
+$dictionary->create();
 
 if(isset($_SERVER['QUERY_STRING'])){
 
@@ -49,14 +55,15 @@ if(isset($_SERVER['QUERY_STRING'])){
 // start registration
 if(isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["fullname"]) && isset($_POST["password_confirm"])){
 
-    DB::connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+    //$database->connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
-    if(DB::ifUserExists("SELECT id FROM users WHERE email=?",[$_POST["email"]])){
+    if($database->ifUserExists("SELECT id FROM users WHERE email=?",[$_POST["email"]])){
 
-        $gErrorMessage = Dictionary::getText("user_exists");
+        $gErrorMessage = $dictionary->getText("user_exists");
  
     }else{
-        $user_image_result = UserImage::checkImage(USER_PICTURES_DIR,50000);
+
+        $user_image_result = $userImage->checkImage(USER_PICTURES_DIR,50000);
         if($user_image_result["status"]){
     
             $hashToStoreInDb = password_hash($_POST["password"], PASSWORD_BCRYPT);
@@ -69,40 +76,41 @@ if(isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["fullname
             $args1[] = $user_image_result["file"];
             
         
-            $args1[0] = DB::register("INSERT INTO users(email,password) VALUES (?,?)",$args);
+            $args1[0] = $database->register("INSERT INTO users(email,password) VALUES (?,?)",$args);
             if($args1[0]){
                $gIsRegistration = false;
-               $result = DB::insertuserdata("INSERT INTO users_data(id,fullname,picture) VALUES (?,?,?)",$args1);
+               $result = $database->insertuserdata("INSERT INTO users_data(id,fullname,picture) VALUES (?,?,?)",$args1);
             }
         
         }else{
-            $gErrorMessage = Dictionary::getText($user_image_result["error"]);
+            $gErrorMessage = $dictionary->getText($user_image_result["error"]);
         }
+
     }
 
-    DB::close();
+    //$database->close();
 }
 // end registration
 
 // start login
 if(!$gIsRegistration && isset($_POST["email"]) && isset($_POST["password"])){
 
-    DB::connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+    //$database->connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
     $args = [$_POST["email"]];
-    $stored_data = DB::login("SELECT id,password FROM users WHERE email=?",$args);
+    $stored_data = $database->login("SELECT id,password FROM users WHERE email=?",$args);
 
     if(!$stored_data){
-        $gErrorMessage = Dictionary::getText("no_such_user");
+        $gErrorMessage = $dictionary->getText("no_such_user");
     }else{
         if(password_verify($_POST["password"], $stored_data[1])){
             $_SESSION["user_id"] = $stored_data[0];
         }else{
-            $gErrorMessage = Dictionary::getText("wrong_password");
+            $gErrorMessage = $dictionary->getText("wrong_password");
         }
     }
 
-    DB::close();
+    //$database->close();
 }
 // end login
 
@@ -110,19 +118,19 @@ if(!$gIsRegistration && isset($_POST["email"]) && isset($_POST["password"])){
 // if user loggedin
 if(isset($_SESSION["user_id"])){
 
-    DB::connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+    //$database->connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
     $args = [$_SESSION["user_id"]];
-    $gUserData = DB::getuser("SELECT fullname,picture FROM users_data WHERE id=?",$args);    
+    $gUserData = $database->getuser("SELECT fullname,picture FROM users_data WHERE id=?",$args);    
     
-    DB::close();
+    //$database->close();
 }
 
 
 //main 
 include("html/header.html.php");
 
-include("inc/jsVariables.php");
+include("utils/jsVariables.php");
 
 if(isset($_SESSION["user_id"])){
 
@@ -135,3 +143,5 @@ if(isset($_SESSION["user_id"])){
 }
 
 include("html/footer.html.php");
+  
+?>
