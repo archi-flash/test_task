@@ -13,9 +13,9 @@ if(MODE=="production"){
     ini_set('display_errors', true);error_reporting(E_ALL ^ E_NOTICE);
 }
 
-require_once 'inc/db.class.php';
-require_once 'inc/userImage.class.php';
-require_once 'inc/dictionary.class.php';
+require_once 'inc/DB.class.php';
+require_once 'inc/UserImage.class.php';
+require_once 'inc/Dictionary.class.php';
 require_once 'inc/errorHandler.php';
 
 set_error_handler('errorHandler', E_ALL);
