@@ -13,9 +13,9 @@ if(MODE=="production"){
     ini_set('display_errors', true);error_reporting(E_ALL ^ E_NOTICE);
 }
 
-require_once 'classes/DB.class.php';
-require_once 'classes/UserImage.class.php';
-require_once 'classes/Dictionary.class.php';
+spl_autoload_register(function ($class_name) {
+    include 'classes/'.$class_name . '.class.php';
+});
 
 require_once 'utils/errorHandler.php';
 
