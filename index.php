@@ -7,9 +7,9 @@ define('DB_PASSWORD', 'zewGM8XytZU5U4bw');
 define('DB_DATABASE', 'project1');  
 define('USER_PICTURES_DIR', './user_images/');  
 
-if(MODE=="production"){
+if (MODE=="production") {
     ini_set('display_errors', 0);error_reporting(0);
-}else{
+} else {
     ini_set('display_errors', true);error_reporting(E_ALL ^ E_NOTICE);
 }
 
